@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/npm/animate.css@3.6.1/animate.min.css">
+</head>
+<body>
+  <section>
+    <div class="container">
+      <div class="col-md-6 text-center">
+        <h1>Cписок моих дел на ближайшее время</h1>
+            <div class="addplace">
+                <input id="inp" type="text" placeholder="Что нужно сделать?">
+                <button id="btn">+</button>
+            </div>
+        <div class="list">
+          <ol id="quest"></ol>
+        </div>
+        <button id="del">Удалить Все!</button>
+      </div>
+      <div class="col-md-6">
+        <center>
+        <h2>Список выполненных дел</h2>
+        <div id="dropel">
+          <p>Перенесите задания которые выполнили</p>
+          <ol id="complete" ondrop="drop(event)" ondragover="allowDrop(event)"></ol>
+        </div>
+        </center>
+      </div>
+    </div>
+  </section>
+
+<script type="text/javascript">
+//Функция при нажатии ""записать""
+function write(){
+    var newLi = document.createElement('li');
+    newLi.innerHTML = document.getElementById("inp").value;
+    var inputValue = document.getElementById("inp").value;
+    var iv = document.createTextNode(inputValue);
+    if (inputValue === '') {
+        alert("Введите Дело !");
+      } else {
+        document.getElementById("quest").appendChild(newLi);
+      }
+    document.getElementById("inp").value = "";
+    document.getElementById('del').style.display='block';
+    newLi.className = 'draggable';
+    newLi.setAttribute('draggable', true);
+    newLi.setAttribute('ondragstart', 'drag(event)');
+    newLi.setAttribute('id', 'li' + document.getElementById("quest").childElementCount);
+
+    //Создание крестика для удаления одного дела 
+    var span = document.createElement("SPAN");
+    var txt = document.createTextNode("\u00D7");
+    span.className = "close";
+    span.addEventListener('click', closes);
+    newLi.addEventListener('dragstart', drag);
+    span.appendChild(txt);
+    newLi.appendChild(span);
+    return;
+  }       
+
+
+  //Функция при нажатии ""Удалить Все""
+  function del(){
+    document.getElementById( "quest" ). innerHTML = "";
+    document.getElementById('del').style.display='none';
+    return;
+  }
+
+  //События при нажатии на кнопки
+  document.getElementById('btn').addEventListener('click', write);
+  document.getElementById('del').addEventListener('click', del);
+
+  //обработчик клик удаления одного дела    
+    var closes = function() {
+        this.parentNode.remove();
+    }  
+ //Drag and drop
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+
+    </script>
+
+</body>
+</html>
